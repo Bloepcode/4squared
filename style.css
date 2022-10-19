@@ -38,11 +38,11 @@ body {
   border-radius: 100%;
 }
 
-.wit::after {
+.white::after {
   background-color: #ffdcb5;
 }
 
-.zwart::after {
+.black::after {
   background-color: #562a00;
 }
 

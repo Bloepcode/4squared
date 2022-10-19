@@ -1,0 +1,56 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #9f6c32;
+  /* background-color: #99612d; */
+}
+
+#game {
+  width: calc(100vmin - 16px);
+  aspect-ratio: 1/1;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+}
+
+.tile {
+  position: relative;
+  background-color: #ffc98c;
+}
+
+.dark-tile {
+  background-color: #d29c5f;
+}
+
+.tile::after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  width: 90%;
+  margin: 5%;
+  aspect-ratio: 1;
+  border-radius: 100%;
+}
+
+.wit::after {
+  background-color: #ffdcb5;
+}
+
+.zwart::after {
+  background-color: #562a00;
+}
+
+.popup {
+  font-family: serif;
+  color: black;
+  padding: 24px 48px;
+  position: absolute;
+  background-color: #ffc98c95;
+  border: 4px solid #99612d;
+}

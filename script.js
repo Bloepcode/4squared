@@ -3,9 +3,9 @@ const winElem = document.getElementById("win");
 const winText = document.getElementById("win-text");
 
 const colors = {
-  EMPTY: "leeg",
-  BLACK: "zwart",
-  WHITE: "wit",
+  EMPTY: "empty",
+  BLACK: "black",
+  WHITE: "white",
 };
 
 const W = 13;
@@ -149,7 +149,7 @@ function handleClick(elem) {
     initialMove = false;
   }
   if (checkWin(id)) {
-    winText.innerText = `${turn} wint!`;
+    winText.innerText = `${turn} wins!`;
     winElem.style.display = "inline";
   }
   elem.classList.add(turn);

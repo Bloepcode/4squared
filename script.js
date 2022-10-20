@@ -1,3 +1,14 @@
+const tileIntroAnimation = [
+  {
+    opacity: 0,
+    transform: "scale(50%)",
+  },
+  {
+    opacity: 1,
+    transform: "scale(100%)",
+  },
+];
+
 const gameElem = document.getElementById("game");
 const winElem = document.getElementById("win");
 const winText = document.getElementById("win-text");
@@ -67,6 +78,12 @@ function generateBoard(w, h) {
     elem.classList.add("tile");
     elem.dataset.id = i;
     gameElem.append(elem);
+    elem.animate(tileIntroAnimation, {
+      fill: "forwards",
+      easing: "ease-in-out",
+      duration: 300,
+      delay: i * 6,
+    });
     board.push(colors.EMPTY);
   }
 }
@@ -160,10 +177,11 @@ function handleClick(elem) {
   if (checkWin(id)) {
     won = turn;
     winText.innerText = `${won} wins!`;
-    winElem.style.display = "inline";
+    winElem.classList.add("display");
+    // winElem.style.display = "inline";
   }
   sounds[Math.floor(Math.random() * sounds.length)].cloneNode(true).play();
-  elem.classList.add(turn);
+  elem.classList.add(turn, "colored");
   board[id] = turn;
   turn = turn == colors.WHITE ? colors.BLACK : colors.WHITE;
   document.body.style.backgroundColor =

@@ -2,12 +2,12 @@
 
 4squared the game
 
-## Regels
+## Rules
 
-### Hoe winnen?
+### How to win?
 
-je wint als je 4 op een rij horizontaal, verticaal of diagonaal hebt.
+You win if you have 4 in a row in any direction including diagonal.
 
-### Hoe aanleggen
+### How to play?
 
-je kan boven, onder, links en rechts van een stukje aanleggen. Diagonaal mag dus niet!
+Play in turns, white begins. White put's it's starting tile somewhere on the board, then add a tile above, under, left, or to the right of any tile until someone wins!

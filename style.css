@@ -39,11 +39,11 @@ body {
 }
 
 .white::after {
-  background-color: #ffdcb5;
+  background-color: #ffd6a7;
 }
 
 .black::after {
-  background-color: #562a00;
+  background-color: #4e331b;
 }
 
 .popup {

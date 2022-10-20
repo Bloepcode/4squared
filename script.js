@@ -82,7 +82,7 @@ function generateBoard(w, h) {
       fill: "forwards",
       easing: "ease-in-out",
       duration: 300,
-      delay: i * 6,
+      delay: i * 3,
     });
     board.push(colors.EMPTY);
   }

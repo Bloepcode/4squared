@@ -60,9 +60,6 @@ function generateBoard(w, h) {
     let elem = document.createElement("div");
     elem.classList.add("tile");
     elem.dataset.id = i;
-    if (i % 2 != 0) {
-      elem.classList.add("dark-tile");
-    }
     gameElem.append(elem);
     board.push(colors.EMPTY);
   }

@@ -21,11 +21,11 @@ body {
 
 .tile {
   position: relative;
-  background-color: #ffc98c;
+  background-color: #d29c5f;
 }
 
-.dark-tile {
-  background-color: #d29c5f;
+.tile:nth-child(odd) {
+  background-color: #ffc98c;
 }
 
 .tile::after {

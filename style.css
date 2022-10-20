@@ -21,11 +21,11 @@ body {
 
 .tile {
   position: relative;
-  background-color: #d29c5f;
+  background-color: #ae804b;
 }
 
 .tile:nth-child(odd) {
-  background-color: #ffc98c;
+  background-color: #c39158;
 }
 
 .tile::after {
@@ -39,7 +39,7 @@ body {
 }
 
 .white::after {
-  background-color: #ffd6a7;
+  background-color: #e6be91;
 }
 
 .black::after {

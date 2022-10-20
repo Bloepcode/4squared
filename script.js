@@ -94,7 +94,9 @@ function checkWin(pos) {
   if (checkAxis(pos, T, B, touchingRightEdge, touchingBottomEdge)) {
     return true;
   }
-  if (checkAxis(pos, L + T, R + B, touchingTopEdge, touchingBottomRightEdge)) {
+  if (
+    checkAxis(pos, L + T, R + B, touchingTopLeftEdge, touchingBottomRightEdge)
+  ) {
     return true;
   }
   if (

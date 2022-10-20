@@ -178,7 +178,6 @@ function handleClick(elem) {
     won = turn;
     winText.innerText = `${won} wins!`;
     winElem.classList.add("display");
-    // winElem.style.display = "inline";
   }
   sounds[Math.floor(Math.random() * sounds.length)].cloneNode(true).play();
   elem.classList.add(turn, "colored");

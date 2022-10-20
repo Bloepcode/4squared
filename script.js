@@ -17,6 +17,7 @@ const T = W;
 const B = -W;
 
 var initialMove = true;
+var won = colors.EMPTY;
 
 var board = [];
 
@@ -137,6 +138,9 @@ function checkMove(pos) {
 }
 
 function handleClick(elem) {
+  if (won != colors.EMPTY) {
+    return;
+  }
   const id = parseInt(elem.dataset.id);
   if (board[id] != colors.EMPTY) {
     return;
@@ -149,6 +153,7 @@ function handleClick(elem) {
     initialMove = false;
   }
   if (checkWin(id)) {
+    won = turn;
     winText.innerText = `${turn} wins!`;
     winElem.style.display = "inline";
   }

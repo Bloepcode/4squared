@@ -2,6 +2,12 @@ const gameElem = document.getElementById("game");
 const winElem = document.getElementById("win");
 const winText = document.getElementById("win-text");
 
+var sounds = [];
+
+for (let i = 0; i < 6; i++) {
+  sounds.push(new Audio(`sounds/hit${i + 1}.mp3`));
+}
+
 const colors = {
   EMPTY: "empty",
   BLACK: "black",
@@ -156,6 +162,7 @@ function handleClick(elem) {
     winText.innerText = `${won} wins!`;
     winElem.style.display = "inline";
   }
+  sounds[Math.floor(Math.random() * sounds.length)].cloneNode(true).play();
   elem.classList.add(turn);
   board[id] = turn;
   turn = turn == colors.WHITE ? colors.BLACK : colors.WHITE;

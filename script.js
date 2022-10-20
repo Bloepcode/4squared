@@ -156,7 +156,7 @@ function handleClick(elem) {
   }
   if (checkWin(id)) {
     won = turn;
-    winText.innerText = `${turn} wins!`;
+    winText.innerText = `${won} wins!`;
     winElem.style.display = "inline";
   }
   elem.classList.add(turn);

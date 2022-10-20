@@ -13,8 +13,8 @@ const H = 13;
 
 const L = -1;
 const R = 1;
-const T = W;
-const B = -W;
+const T = -W;
+const B = W;
 
 var initialMove = true;
 var won = colors.EMPTY;

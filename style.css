@@ -3,6 +3,23 @@
   margin: 0;
 }
 
+.controls {
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  width: 32px;
+  padding: 10px;
+  display: flex;
+}
+
+.controls > button {
+  padding: 0;
+  width: 100%;
+  aspect-ratio: 1;
+  background-image: url("icons/restart.png");
+  background-size: cover;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -67,29 +84,42 @@ body {
   border: 4px solid #ae804b;
   transition: all 500ms;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.popup > div {
+  display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
 
-.popup > button {
+button {
   color: #4e331b;
   font-weight: bolder;
   height: 32px;
-  aspect-ratio: 1;
   font-size: larger;
-  margin: 0 -16px 0 16px;
   background-color: transparent;
   outline: none;
   border: none;
   cursor: pointer;
   transition: all 500ms;
+  padding: 8px 16px;
 }
 
-.popup > button:hover {
+.popup > div > button {
+  margin: 0 -16px 0 16px;
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+button:hover {
   background-color: #4e331b3b;
 }
-.popup > button:active {
+button:active {
   background-color: #4e331b67;
 }
 

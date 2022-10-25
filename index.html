@@ -11,12 +11,19 @@
     <div id="game"></div>
 
     <div class="popup" id="win">
-      <h1 id="win-text">Player [col] won!</h1>
-      <button
-        onclick="document.getElementById('win').classList.remove('display')"
-      >
-        X
-      </button>
+      <div>
+        <h1 id="win-text">Player [col] won!</h1>
+        <button
+          onclick="document.getElementById('win').classList.remove('display')"
+        >
+          X
+        </button>
+      </div>
+      <button onclick="restart();">Play again!</button>
+    </div>
+
+    <div class="controls">
+      <button onclick="restart();"></button>
     </div>
 
     <script src="script.js"></script>

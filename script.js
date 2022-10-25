@@ -159,6 +159,19 @@ function checkMove(pos) {
   return false;
 }
 
+function restart() {
+  document.getElementById("win").classList.remove("display");
+  won = colors.EMPTY;
+  initialMove = true;
+  turn = colors.WHITE;
+  for (let i = 0; i < W * H; i++) {
+    setTimeout(() => {
+      tileElems[i].classList.remove("colored", "white", "black");
+    }, i * 3);
+    board[i] = colors.EMPTY;
+  }
+}
+
 function handleClick(elem) {
   if (won != colors.EMPTY) {
     return;

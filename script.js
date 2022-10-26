@@ -197,7 +197,7 @@ function handleClick(elem) {
   board[id] = turn;
   turn = turn == colors.WHITE ? colors.BLACK : colors.WHITE;
   document.body.style.backgroundColor =
-    turn == colors.WHITE ? "#9f7443" : "#805f3b";
+    turn == colors.WHITE ? "#b98951" : "#805f3b";
 }
 
 tileElems.forEach((element) => {

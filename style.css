@@ -8,15 +8,30 @@
   top: 0%;
   right: 0%;
   width: 32px;
-  padding: 10px;
+  padding: 16px;
   display: flex;
+  gap: 8px;
+  flex-direction: column;
+  opacity: 0.5;
+}
+
+.controls:hover {
+  opacity: 1;
+  transition: all 500ms;
+}
+
+.restart-btn {
+  background-image: url("icons/restart.png");
+}
+
+.help-btn {
+  background-image: url("icons/help.png");
 }
 
 .controls > button {
   padding: 0;
   width: 100%;
   aspect-ratio: 1;
-  background-image: url("icons/restart.png");
   background-size: cover;
 }
 
@@ -126,4 +141,35 @@ button:active {
 .display {
   pointer-events: all;
   opacity: 1;
+}
+
+#help > div > button {
+  position: absolute;
+  right: 0%;
+  top: 0%;
+  margin: 16px;
+}
+
+.help-examples {
+  width: 100%;
+  display: flex;
+}
+
+.help-examples > div {
+  width: 100%;
+}
+
+#example1 {
+  width: 75%;
+  background-image: url("images/example1.png");
+  background-position: center;
+  background-size: cover;
+  aspect-ratio: 1;
+}
+#example2 {
+  width: 75%;
+  background-image: url("images/example2.png");
+  background-position: center;
+  background-size: cover;
+  aspect-ratio: 1;
 }

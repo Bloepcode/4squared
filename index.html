@@ -10,6 +10,14 @@
   <body>
     <div id="game"></div>
 
+    <div class="controls">
+      <button class="restart-btn" onclick="restart();"></button>
+      <button
+        class="help-btn"
+        onclick="document.getElementById('help').classList.add('display');"
+      ></button>
+    </div>
+
     <div class="popup" id="win">
       <div>
         <h1 id="win-text">Player [col] won!</h1>
@@ -22,8 +30,37 @@
       <button onclick="restart();">Play again!</button>
     </div>
 
-    <div class="controls">
-      <button onclick="restart();"></button>
+    <div class="help-popup popup" id="help">
+      <div>
+        <h1>Help</h1>
+        <button
+          onclick="document.getElementById('help').classList.remove('display')"
+        >
+          X
+        </button>
+      </div>
+      <p>
+        You can place tile to the left, right, under and above every other tile.
+        <br />
+        (The yellow tiles in example 1)
+      </p>
+      <p>
+        You win if you have 4 in a row horizontally, vertically, and diagonally!
+        <br />
+        (Example 2)
+      </p>
+      <div class="help-examples">
+        <div>
+          Example 1:
+          <!-- <img src="images/example1.png" alt="Example 1" id="example1" /> -->
+          <div id="example1"></div>
+        </div>
+        <div>
+          Example 2:
+          <!-- <img src="images/example2.png" alt="Example 1" id="example1" /> -->
+          <div id="example2"></div>
+        </div>
+      </div>
     </div>
 
     <script src="script.js"></script>

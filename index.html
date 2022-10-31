@@ -16,6 +16,10 @@
         class="help-btn"
         onclick="document.getElementById('help').classList.add('display');"
       ></button>
+      <button
+        class="mp-btn"
+        onclick="document.getElementById('mp').classList.add('display');"
+      ></button>
     </div>
 
     <div class="popup" id="win">
@@ -28,6 +32,30 @@
         </button>
       </div>
       <button onclick="restart();">Play again!</button>
+    </div>
+
+    <div class="popup" id="mp">
+      <div>
+        <h1 id="win-text">Multiplayer</h1>
+        <button
+          onclick="document.getElementById('mp').classList.remove('display')"
+        >
+          X
+        </button>
+      </div>
+
+      <p>username</p>
+      <input type="text" id="username" />
+      <button
+        onclick="mp(document.getElementById('username').value, false, undefined); document.getElementById('mp').classList.remove('display')"
+      >
+        Host!
+      </button>
+      <button
+        onclick="mp(undefined, true, document.getElementById('username').value); document.getElementById('mp').classList.remove('display')"
+      >
+        Join!
+      </button>
     </div>
 
     <div class="help-popup popup" id="help">
@@ -63,6 +91,8 @@
       </div>
     </div>
 
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <script src="script.js"></script>
+    <script src="multiplayer.js"></script>
   </body>
 </html>

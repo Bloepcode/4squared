@@ -13,6 +13,9 @@ const gameElem = document.getElementById("game");
 const winElem = document.getElementById("win");
 const winText = document.getElementById("win-text");
 
+const msgElem = document.getElementById("msg");
+const msgText = document.getElementById("msg-text");
+
 var sounds = [];
 
 for (let i = 0; i < 6; i++) {
@@ -37,6 +40,9 @@ var initialMove = true;
 var won = colors.EMPTY;
 
 var board = [];
+
+var mpEnabled = false;
+var yourColor = colors.WHITE;
 
 var turn = colors.WHITE;
 
@@ -172,7 +178,24 @@ function restart() {
   }
 }
 
+function place(id, elem) {
+  if (checkWin(id)) {
+    won = turn;
+    winText.innerText = `${won} wins!`;
+    winElem.classList.add("display");
+  }
+  sounds[Math.floor(Math.random() * sounds.length)].cloneNode(true).play();
+  elem.classList.add(turn, "colored");
+  board[id] = turn;
+  turn = turn == colors.WHITE ? colors.BLACK : colors.WHITE;
+  document.body.style.backgroundColor =
+    turn == colors.WHITE ? "#b98951" : "#805f3b";
+}
+
 function handleClick(elem) {
+  if (mpEnabled && turn != yourColor) {
+    return;
+  }
   if (won != colors.EMPTY) {
     return;
   }
@@ -187,17 +210,12 @@ function handleClick(elem) {
   } else {
     initialMove = false;
   }
-  if (checkWin(id)) {
-    won = turn;
-    winText.innerText = `${won} wins!`;
-    winElem.classList.add("display");
+
+  if (conn) {
+    sendMove(id);
   }
-  sounds[Math.floor(Math.random() * sounds.length)].cloneNode(true).play();
-  elem.classList.add(turn, "colored");
-  board[id] = turn;
-  turn = turn == colors.WHITE ? colors.BLACK : colors.WHITE;
-  document.body.style.backgroundColor =
-    turn == colors.WHITE ? "#b98951" : "#805f3b";
+
+  place(id, elem);
 }
 
 tileElems.forEach((element) => {
@@ -205,3 +223,18 @@ tileElems.forEach((element) => {
     handleClick(e.target);
   });
 });
+
+function msg(text) {
+  var elem = document.createElement("div");
+  elem.classList.add("msg");
+
+  var textElem = document.createElement("p");
+  textElem.innerText = text;
+
+  elem.appendChild(textElem);
+  document.body.appendChild(elem);
+
+  setTimeout(() => {
+    elem.remove();
+  }, 1000);
+}

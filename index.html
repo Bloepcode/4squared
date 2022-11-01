@@ -26,6 +26,7 @@
       <div>
         <h1 id="win-text">Player [col] won!</h1>
         <button
+          class="btn-x"
           onclick="document.getElementById('win').classList.remove('display')"
         >
           X
@@ -35,27 +36,35 @@
     </div>
 
     <div class="popup" id="mp">
-      <div>
+      <div class="popup-title">
         <h1 id="win-text">Multiplayer</h1>
         <button
+          class="btn-x"
           onclick="document.getElementById('mp').classList.remove('display')"
         >
           X
         </button>
       </div>
 
-      <p>Server name</p>
-      <input type="text" id="username" />
-      <button
-        onclick="mp(document.getElementById('username').value, false, undefined); document.getElementById('mp').classList.remove('display')"
-      >
-        Host!
-      </button>
-      <button
-        onclick="mp(undefined, true, document.getElementById('username').value); document.getElementById('mp').classList.remove('display')"
-      >
-        Join!
-      </button>
+      <div class="sub-popup display" id="mp-init">
+        <p>Server name</p>
+        <input type="text" id="username" />
+        <button
+          onclick="mp(document.getElementById('username').value, false, undefined); document.getElementById('mp').classList.remove('display')"
+        >
+          Host!
+        </button>
+        <button
+          onclick="mp(undefined, true, document.getElementById('username').value); document.getElementById('mp').classList.remove('display')"
+        >
+          Join!
+        </button>
+      </div>
+      <div class="sub-popup" id="mp-info">
+        <p id="mp-name">Servername:</p>
+        <p id="mp-status">Status: !</p>
+        <button onclick="  conn.close();">Disconnect</button>
+      </div>
     </div>
 
     <div class="help-popup popup" id="help">

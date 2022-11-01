@@ -187,6 +187,8 @@ function restart() {
     return;
   }
   msg("Restarting!", 2000);
+  meRestarted = false;
+  otherRestarted = false;
   initialMove = true;
   document.getElementById("win").classList.remove("display");
   won = colors.EMPTY;

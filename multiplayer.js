@@ -9,6 +9,20 @@ var onRestart = otherRestart;
 
 var connectionTimeoutId = undefined;
 
+const mpInitElem = document.getElementById("mp-init");
+const mpInfoElem = document.getElementById("mp-info");
+
+const mpNameElem = document.getElementById("mp-name");
+const mpStatusElem = document.getElementById("mp-status");
+
+function setStatus(status) {
+  console.log("ID", id);
+  if (id) {
+    mpNameElem.innerText = "Server name: " + id;
+  }
+  mpStatusElem.innerText = "Status: " + status;
+}
+
 async function connectionTimeout() {
   connectionTimeoutId = setTimeout(() => {
     if (!id) {
@@ -18,11 +32,13 @@ async function connectionTimeout() {
   }, 2000);
 }
 
-function initMP(_onOpen, id) {
+function initMP(_onOpen, _id) {
   if (peer) {
-    msg("Already hosting!", 2000);
+    msg("Already initialized!", 2000);
     return;
   }
+
+  id = _id;
 
   connectionTimeout();
 
@@ -34,10 +50,13 @@ function initMP(_onOpen, id) {
 
   onOpen = _onOpen;
 
-  peer.on("open", (id) => {
+  peer.on("open", (_id) => {
     clearTimeout(connectionTimeoutId);
     msg("Opened", 2000);
-    id = id;
+    setStatus("Waiting for other player...");
+
+    mpInitElem.classList.remove("display");
+    mpInfoElem.classList.add("display");
     if (onOpen) {
       onOpen();
     }
@@ -45,9 +64,13 @@ function initMP(_onOpen, id) {
 
   peer.on("connection", (_conn) => {
     msg("Connected, your turn!");
+    setStatus("Connected!");
     restart();
     mpEnabled = true;
     conn = _conn;
+    conn.on("close", () => {
+      disconnect();
+    });
     conn.on("data", (data) => {
       handleData(data);
     });
@@ -92,8 +115,15 @@ function connect(otherId) {
   mpEnabled = true;
   yourColor = colors.BLACK;
   conn = peer.connect(otherId);
+  conn.on("open", () => {
+    msg("Connected!", 2000);
+    setStatus("Connected");
+  });
   conn.on("data", (data) => {
     handleData(data);
+  });
+  conn.on("close", () => {
+    disconnect();
   });
   msg("Connecting!", 2000);
 }
@@ -111,4 +141,17 @@ function mp(id, host, otherId) {
       connect(otherId);
     }, id);
   }
+}
+
+function disconnect() {
+  if (!conn) {
+    msg("Not connected!", 2000);
+    return;
+  }
+  msg("Disconnected!", 2000);
+
+  mpInitElem.classList.add("display");
+  mpInfoElem.classList.remove("display");
+
+  conn = undefined;
 }

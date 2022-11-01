@@ -117,6 +117,7 @@ function connect(otherId) {
   conn = peer.connect(otherId);
   conn.on("open", () => {
     msg("Connected!", 2000);
+    id = otherId;
     setStatus("Connected");
   });
   conn.on("data", (data) => {

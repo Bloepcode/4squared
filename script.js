@@ -224,6 +224,7 @@ function place(id, elem) {
 
 function handleClick(elem) {
   if (mpEnabled && turn != yourColor) {
+    msg("Not your turn!", 1000);
     return;
   }
   if (won != colors.EMPTY) {

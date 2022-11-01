@@ -46,6 +46,9 @@ var yourColor = colors.WHITE;
 
 var turn = colors.WHITE;
 
+var otherRestarted = false;
+var meRestarted = false;
+
 generateBoard(W, H);
 
 const tileElems = Array.from(document.getElementsByClassName("tile"));
@@ -165,11 +168,30 @@ function checkMove(pos) {
   return false;
 }
 
+function otherRestart() {
+  otherRestarted = true;
+  if (!meRestarted) {
+    msg("Other person wants to restart!", 2000);
+    return;
+  }
+  restart();
+}
+
 function restart() {
+  if (mpEnabled && !meRestarted) {
+    meRestarted = true;
+    sendRestart();
+  }
+  if (mpEnabled && !otherRestarted) {
+    msg("Waiting for other person to restart!", 2000);
+    return;
+  }
+  msg("Restarting!", 2000);
   document.getElementById("win").classList.remove("display");
   won = colors.EMPTY;
-  initialMove = true;
   turn = colors.WHITE;
+  document.body.style.backgroundColor =
+    turn == colors.WHITE ? "#b98951" : "#805f3b";
   for (let i = 0; i < W * H; i++) {
     setTimeout(() => {
       tileElems[i].classList.remove("colored", "white", "black");
@@ -179,6 +201,13 @@ function restart() {
 }
 
 function place(id, elem) {
+  if (!initialMove) {
+    if (!checkMove(id)) {
+      return;
+    }
+  } else {
+    initialMove = false;
+  }
   if (checkWin(id)) {
     won = turn;
     winText.innerText = `${won} wins!`;
@@ -203,13 +232,6 @@ function handleClick(elem) {
   if (board[id] != colors.EMPTY) {
     return;
   }
-  if (!initialMove) {
-    if (!checkMove(id)) {
-      return;
-    }
-  } else {
-    initialMove = false;
-  }
 
   if (conn) {
     sendMove(id);
@@ -224,7 +246,8 @@ tileElems.forEach((element) => {
   });
 });
 
-function msg(text) {
+function msg(text, time) {
+  console.log(text);
   var elem = document.createElement("div");
   elem.classList.add("msg");
 
@@ -236,5 +259,5 @@ function msg(text) {
 
   setTimeout(() => {
     elem.remove();
-  }, 1000);
+  }, time);
 }

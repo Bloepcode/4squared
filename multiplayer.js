@@ -4,30 +4,49 @@ var conn = undefined;
 var id = undefined;
 
 var onOpen = undefined;
-var onMove = undefined;
+var onMove = onPlaceHandler;
+var onRestart = otherRestart;
 
-function initMP(_onMove, _onOpen, id) {
+var connectionTimeoutId = undefined;
+
+async function connectionTimeout() {
+  connectionTimeoutId = setTimeout(() => {
+    if (!id) {
+      msg("Could not open, maybe the username is taken!", 5000);
+      peer = undefined;
+    }
+  }, 2000);
+}
+
+function initMP(_onOpen, id) {
+  if (peer) {
+    msg("Already hosting!", 2000);
+    return;
+  }
+
+  connectionTimeout();
+
   if (id) {
     peer = new Peer(id);
   } else {
     peer = new Peer();
   }
 
-  onMove = _onMove;
   onOpen = _onOpen;
 
   peer.on("open", (id) => {
-    msg("Opened");
+    clearTimeout(connectionTimeoutId);
+    msg("Opened", 2000);
     id = id;
     if (onOpen) {
       onOpen();
     }
-    console.log(id);
   });
 
   peer.on("connection", function (_conn) {
-    msg("Your turn!");
+    msg("Connected, your turn!");
     restart();
+    mpEnabled = true;
     conn = _conn;
     conn.on("data", (data) => {
       handleData(data);
@@ -38,12 +57,14 @@ function initMP(_onMove, _onOpen, id) {
 function handleData(data) {
   if (data.type == "move") {
     onMove(data.tile);
+  } else if (data.type == "restart") {
+    onRestart();
   }
 }
 
 function sendMove(tile) {
   if (!conn) {
-    console.log("No connection has been made yet!");
+    msg("No connection has been made yet!", 5000);
     return;
   }
   conn.send({
@@ -52,36 +73,42 @@ function sendMove(tile) {
   });
 }
 
+function sendRestart() {
+  if (!conn) {
+    msg("No connection has been made yet!", 5000);
+    return;
+  }
+  conn.send({
+    type: "restart",
+  });
+}
+
 function connect(otherId) {
   restart();
+  mpEnabled = true;
   yourColor = colors.BLACK;
   if (conn) {
-    console.log("Already connected!");
+    msg("Already connected!", 4000);
     return;
   }
   conn = peer.connect(otherId);
   conn.on("data", (data) => {
     handleData(data);
   });
-  msg("Connecting!");
+  msg("Connecting!", 2000);
 }
 
 function onPlaceHandler(tile) {
-  msg("Your turn!");
+  msg("Your turn!", 1000);
   place(tile, tileElems[tile]);
 }
 
 function mp(id, host, otherId) {
-  mpEnabled = true;
   if (!host) {
-    initMP(onPlaceHandler, undefined, id);
+    initMP(undefined, id);
   } else {
-    initMP(
-      onPlaceHandler,
-      () => {
-        connect(otherId);
-      },
-      id
-    );
+    initMP(() => {
+      connect(otherId);
+    }, id);
   }
 }

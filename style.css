@@ -6,7 +6,7 @@
 .controls {
   position: absolute;
   top: 0%;
-  right: 0%;
+  left: 0%;
   width: 32px;
   padding: 16px;
   display: flex;
@@ -193,4 +193,10 @@ button:active {
   background-position: center;
   background-size: cover;
   aspect-ratio: 1;
+}
+
+@media screen and (orientation: portrait) {
+  .controls {
+    flex-direction: row;
+  }
 }

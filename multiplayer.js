@@ -154,5 +154,10 @@ function disconnect() {
   mpInitElem.classList.add("display");
   mpInfoElem.classList.remove("display");
 
+  mpEnabled = false;
+
   conn = undefined;
+
+  peer.disconnect();
+  peer = undefined;
 }

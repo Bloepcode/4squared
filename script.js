@@ -254,6 +254,7 @@ function msg(text, time) {
   elem.classList.add("msg");
 
   var textElem = document.createElement("p");
+  textElem.classList.add("bold");
   textElem.innerText = text;
 
   elem.appendChild(textElem);

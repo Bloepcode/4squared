@@ -43,7 +43,7 @@ function initMP(_onOpen, id) {
     }
   });
 
-  peer.on("connection", function (_conn) {
+  peer.on("connection", (_conn) => {
     msg("Connected, your turn!");
     restart();
     mpEnabled = true;
@@ -84,13 +84,13 @@ function sendRestart() {
 }
 
 function connect(otherId) {
-  restart();
-  mpEnabled = true;
-  yourColor = colors.BLACK;
   if (conn) {
     msg("Already connected!", 4000);
     return;
   }
+  restart();
+  mpEnabled = true;
+  yourColor = colors.BLACK;
   conn = peer.connect(otherId);
   conn.on("data", (data) => {
     handleData(data);

@@ -42,6 +42,8 @@ function initMP(_onOpen, _id) {
 
   id = _id;
 
+  qrCode.makeCode(origin + "?server=" + id);
+
   connectionTimeout();
 
   if (id) {
@@ -177,4 +179,9 @@ function disconnect() {
   conn = undefined;
 
   msg("Disconnected!", 2000);
+}
+
+const params = new URLSearchParams(location.search);
+if (params.has("server")) {
+  mp(undefined, true, params.get("server"));
 }

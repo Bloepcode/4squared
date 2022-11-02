@@ -16,6 +16,13 @@ const winText = document.getElementById("win-text");
 const msgElem = document.getElementById("msg");
 const msgText = document.getElementById("msg-text");
 
+const qrCode = new QRCode(document.getElementById("qrcode"), {
+  text: location.origin,
+  colorDark: "#000000",
+  colorLight: "#c39158",
+  correctLevel: QRCode.CorrectLevel.H,
+});
+
 var sounds = [];
 
 for (let i = 0; i < 6; i++) {

@@ -50,17 +50,18 @@
         <p>Server name</p>
         <input type="text" id="username" />
         <button
-          onclick="mp(document.getElementById('username').value, false, undefined); document.getElementById('mp').classList.remove('display')"
+          onclick="mp(document.getElementById('username').value, false, undefined);"
         >
           Host!
         </button>
         <button
-          onclick="mp(undefined, true, document.getElementById('username').value); document.getElementById('mp').classList.remove('display')"
+          onclick="mp(undefined, true, document.getElementById('username').value);"
         >
           Join!
         </button>
       </div>
       <div class="sub-popup" id="mp-info">
+        <div id="qrcode"></div>
         <p id="mp-name">Servername:</p>
         <p id="mp-status">Status: !</p>
         <button onclick="disconnect();">Disconnect</button>
@@ -101,6 +102,7 @@
     </div>
 
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="qrcode.min.js"></script>
     <script src="script.js"></script>
     <script src="multiplayer.js"></script>
   </body>

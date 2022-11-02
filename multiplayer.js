@@ -3,6 +3,8 @@ var peer = undefined;
 var conn = undefined;
 var id = undefined;
 
+var connected = false;
+
 var onOpen = undefined;
 var onMove = onPlaceHandler;
 var onRestart = otherRestart;
@@ -63,6 +65,11 @@ function initMP(_onOpen, _id) {
   });
 
   peer.on("connection", (_conn) => {
+    if (connected) {
+      _conn.close();
+      return;
+    }
+    connected = true;
     msg("Connected, your turn!");
     setStatus("Connected!");
     restart();
@@ -145,19 +152,21 @@ function mp(id, host, otherId) {
 }
 
 function disconnect() {
-  if (!conn) {
+  if (!peer) {
     msg("Not connected!", 2000);
     return;
   }
-  msg("Disconnected!", 2000);
+  connected = false;
 
   mpInitElem.classList.add("display");
   mpInfoElem.classList.remove("display");
 
   mpEnabled = false;
 
-  conn = undefined;
-
   peer.disconnect();
   peer = undefined;
+
+  conn = undefined;
+
+  msg("Disconnected!", 2000);
 }

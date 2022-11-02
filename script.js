@@ -204,13 +204,6 @@ function restart() {
 }
 
 function place(id, elem) {
-  if (!initialMove) {
-    if (!checkMove(id)) {
-      return;
-    }
-  } else {
-    initialMove = false;
-  }
   if (checkWin(id)) {
     won = turn;
     winText.innerText = `${won} wins!`;
@@ -235,6 +228,14 @@ function handleClick(elem) {
   const id = parseInt(elem.dataset.id);
   if (board[id] != colors.EMPTY) {
     return;
+  }
+
+  if (!initialMove) {
+    if (!checkMove(id)) {
+      return;
+    }
+  } else {
+    initialMove = false;
   }
 
   if (conn) {

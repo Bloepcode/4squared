@@ -143,8 +143,16 @@ function onPlaceHandler(tile) {
 
 function mp(id, host, otherId) {
   if (!host) {
+    if (!id) {
+      msg("Please enter a server name!", 2000);
+      return;
+    }
     initMP(undefined, id);
   } else {
+    if (!otherId) {
+      msg("Please enter a server name!", 2000);
+      return;
+    }
     initMP(() => {
       connect(otherId);
     }, id);

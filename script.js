@@ -204,6 +204,7 @@ function restart() {
 }
 
 function place(id, elem) {
+  initialMove = false;
   if (checkWin(id)) {
     won = turn;
     winText.innerText = `${won} wins!`;
@@ -234,8 +235,6 @@ function handleClick(elem) {
     if (!checkMove(id)) {
       return;
     }
-  } else {
-    initialMove = false;
   }
 
   if (conn) {

@@ -35,6 +35,12 @@
 .help-btn {
   background-image: url("icons/help.png");
 }
+.download-btn {
+  background-image: url("icons/download.png");
+}
+.upload-btn {
+  background-image: url("icons/upload.png");
+}
 
 .controls > button {
   padding: 0;

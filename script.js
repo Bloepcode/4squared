@@ -273,3 +273,59 @@ function msg(text, time) {
     elem.remove();
   }, time);
 }
+
+function save() {
+  const gameData = {
+    board: board,
+    turn: turn,
+    won: won,
+    yourColor: yourColor,
+    initialMove: initialMove,
+    otherRestarted: otherRestarted,
+    meRestarted: meRestarted,
+  };
+
+  const jsonData = JSON.stringify(gameData);
+  const blob = new Blob([jsonData], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "savegame" + ".json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function load() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "application/json";
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = JSON.parse(e.target.result);
+      board = data.board;
+      turn = data.turn;
+      won = data.won;
+      yourColor = data.yourColor;
+      initialMove = data.initialMove;
+      otherRestarted = data.otherRestarted;
+      meRestarted = data.meRestarted;
+      for (let i = 0; i < W * H; i++) {
+        if (board[i] != colors.EMPTY) {
+          tileElems[i].classList.add(board[i], "colored");
+        }
+      }
+      document.body.style.backgroundColor =
+        turn == colors.WHITE ? "#b98951" : "#805f3b";
+      if (won != colors.EMPTY) {
+        winText.innerText = `${won} wins!`;
+        winElem.classList.add("display");
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}

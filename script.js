@@ -1,331 +1,155 @@
-const tileIntroAnimation = [
-  {
-    opacity: 0,
-    transform: "scale(50%)",
-  },
-  {
-    opacity: 1,
-    transform: "scale(100%)",
-  },
-];
-
-const gameElem = document.getElementById("game");
-const winElem = document.getElementById("win");
-const winText = document.getElementById("win-text");
-
-const msgElem = document.getElementById("msg");
-const msgText = document.getElementById("msg-text");
-
-const qrCode = new QRCode(document.getElementById("qrcode"), {
-  text: location.origin,
-  colorDark: "#000000",
-  colorLight: "#c39158",
-  correctLevel: QRCode.CorrectLevel.H,
-});
-
-var sounds = [];
-
-for (let i = 0; i < 6; i++) {
-  sounds.push(new Audio(`sounds/hit${i + 1}.mp3`));
-}
-
-const colors = {
-  EMPTY: "empty",
-  BLACK: "black",
-  WHITE: "white",
-};
-
-const W = 13;
-const H = 13;
-
-const L = -1;
-const R = 1;
-const T = -W;
-const B = W;
-
-var initialMove = true;
-var won = colors.EMPTY;
-
-var board = [];
-
-var mpEnabled = false;
-var yourColor = colors.WHITE;
-
-var turn = colors.WHITE;
-
-var otherRestarted = false;
-var meRestarted = false;
-
-generateBoard(W, H);
-
-const tileElems = Array.from(document.getElementsByClassName("tile"));
-
-function touchingLeftEdge(pos) {
-  return pos % W == 0;
-}
-function touchingRightEdge(pos) {
-  return (pos - W + 1) % W == 0;
-}
-function touchingTopEdge(pos) {
-  return pos < W;
-}
-
-function touchingBottomEdge(pos) {
-  return pos >= W * H - W;
-}
-
-function touchingTopLeftEdge(pos) {
-  return touchingTopEdge(pos) || touchingLeftEdge(pos);
-}
-function touchingTopRightEdge(pos) {
-  return touchingTopEdge(pos) || touchingRightEdge(pos);
-}
-function touchingBottomLeftEdge(pos) {
-  return touchingBottomEdge(pos) || touchingLeftEdge(pos);
-}
-function touchingBottomRightEdge(pos) {
-  return touchingBottomEdge(pos) || touchingRightEdge(pos);
-}
-
-function generateBoard(w, h) {
-  gameElem.style.gridTemplateColumns = `repeat(${w}, auto)`;
-  for (let i = 0; i < w * h; i++) {
-    let elem = document.createElement("div");
-    elem.classList.add("tile");
-    elem.dataset.id = i;
-    gameElem.append(elem);
-    elem.animate(tileIntroAnimation, {
-      fill: "forwards",
-      easing: "ease-in-out",
-      duration: 300,
-      delay: i * 3,
-    });
-    board.push(colors.EMPTY);
-  }
-}
-
-function checkAxis(pos, dir1, dir2, touching1, touching2) {
-  var amount = 1;
-  for (let i = 0; i < 3; i++) {
-    if (!touching1(pos) && board[pos + dir1 + dir1 * i] == turn) {
-      amount += 1;
-    } else {
-      break;
-    }
-  }
-  for (let i = 0; i < 3; i++) {
-    if (!touching2(pos) && board[pos + dir2 + dir2 * i] == turn) {
-      amount += 1;
-    } else {
-      break;
-    }
-  }
-  return amount >= 4;
-}
-
-function checkWin(pos) {
-  if (checkAxis(pos, L, R, touchingLeftEdge, touchingRightEdge)) {
-    return true;
-  }
-  if (checkAxis(pos, T, B, touchingRightEdge, touchingBottomEdge)) {
-    return true;
-  }
-  if (
-    checkAxis(pos, L + T, R + B, touchingTopLeftEdge, touchingBottomRightEdge)
-  ) {
-    return true;
-  }
-  if (
-    checkAxis(pos, L + B, R + T, touchingBottomLeftEdge, touchingTopRightEdge)
-  ) {
-    return true;
-  }
-  return false;
-}
-
-function checkMove(pos) {
-  if (
-    !touchingLeftEdge(pos) &&
-    board[pos + L] != undefined &&
-    board[pos + L] != colors.EMPTY
-  ) {
-    return true;
-  }
-  if (
-    !touchingRightEdge(pos) &&
-    board[pos + R] != undefined &&
-    board[pos + R] != colors.EMPTY
-  ) {
-    return true;
-  }
-  if (
-    !touchingTopEdge(pos) &&
-    board[pos + T] != undefined &&
-    board[pos + T] != colors.EMPTY
-  ) {
-    return true;
-  }
-  if (
-    !touchingBottomEdge(pos) &&
-    board[pos + B] != undefined &&
-    board[pos + B] != colors.EMPTY
-  ) {
-    return true;
-  }
-  return false;
-}
-
-function otherRestart() {
-  otherRestarted = true;
-  if (!meRestarted) {
-    msg("Other person wants to restart!", 2000);
-    return;
-  }
-  restart();
-}
-
-function restart() {
-  if (mpEnabled && !meRestarted) {
-    meRestarted = true;
-    sendRestart();
-  }
-  if (mpEnabled && !otherRestarted) {
-    msg("Waiting for other person to restart!", 2000);
-    return;
-  }
-  msg("Restarting!", 2000);
-  meRestarted = false;
-  otherRestarted = false;
+class Game {
   initialMove = true;
-  document.getElementById("win").classList.remove("display");
   won = colors.EMPTY;
+  board = [];
   turn = colors.WHITE;
-  document.body.style.backgroundColor =
-    turn == colors.WHITE ? "#b98951" : "#805f3b";
-  for (let i = 0; i < W * H; i++) {
-    setTimeout(() => {
-      tileElems[i].classList.remove("colored", "white", "black");
-    }, i * 3);
-    board[i] = colors.EMPTY;
-  }
-}
+  mp = undefined;
 
-function place(id, elem) {
-  initialMove = false;
-  if (checkWin(id)) {
-    won = turn;
-    winText.innerText = `${won} wins!`;
-    winElem.classList.add("display");
-  }
-  sounds[Math.floor(Math.random() * sounds.length)].cloneNode(true).play();
-  elem.classList.add(turn, "colored");
-  board[id] = turn;
-  turn = turn == colors.WHITE ? colors.BLACK : colors.WHITE;
-  document.body.style.backgroundColor =
-    turn == colors.WHITE ? "#b98951" : "#805f3b";
-}
-
-function handleClick(elem) {
-  if (mpEnabled && turn != yourColor) {
-    msg("Not your turn!", 1000);
-    return;
-  }
-  if (won != colors.EMPTY) {
-    return;
-  }
-  const id = parseInt(elem.dataset.id);
-  if (board[id] != colors.EMPTY) {
-    return;
+  init(w, h) {
+    gameElem.style.gridTemplateColumns = `repeat(${w}, auto)`;
+    for (let i = 0; i < w * h; i++) {
+      let elem = document.createElement("div");
+      elem.classList.add("tile");
+      elem.dataset.id = i;
+      gameElem.append(elem);
+      elem.animate(tileIntroAnimation, {
+        fill: "forwards",
+        easing: "ease-in-out",
+        duration: 300,
+        delay: i * 3,
+      });
+      elem.addEventListener("click", () => {
+        this.handlePlace(elem);
+      });
+      this.board.push(colors.EMPTY);
+    }
   }
 
-  if (!initialMove) {
-    if (!checkMove(id)) {
+  place(id, elem) {
+    this.initialMove = false;
+    sounds[Math.floor(Math.random() * sounds.length)].cloneNode(true).play();
+    console.log(checkWin(id, this.board, this.turn));
+    if (checkWin(id, this.board, this.turn)) {
+      this.won = this.turn;
+      winText.innerText = `${this.won} wins!`;
+      winElem.classList.add("display");
+    }
+    this.board[id] = this.turn;
+    elem.classList.add(this.turn, "colored");
+    this.turn = this.turn == colors.WHITE ? colors.BLACK : colors.WHITE;
+    document.body.style.backgroundColor =
+      this.turn == colors.WHITE ? "#b98951" : "#805f3b";
+  }
+
+  handlePlace(elem) {
+    const id = parseInt(elem.dataset.id);
+    if (this.mp) {
+      if (this.mp.thisColor != this.turn) {
+        msg("It's not your turn!", 1500);
+        return;
+      }
+    }
+    if (this.initialMove) {
+      if (this.mp && this.mp.conn) {
+        this.mp.place(id);
+      }
+      this.place(id, elem);
       return;
     }
+    if (this.board[id] != colors.EMPTY) {
+      msg("Invalid move: tile is already taken", 1500);
+      return;
+    }
+    if (this.won != colors.EMPTY) {
+      msg("Invalid move: game is already over", 1500);
+      return;
+    }
+    if (!checkMove(id, this.board)) {
+      msg("Invalid move: no adjacent tiles", 1500);
+      return;
+    }
+    if (this.mp && this.mp.conn) {
+      this.mp.place(id);
+    }
+    this.place(id, elem);
   }
 
-  if (conn) {
-    sendMove(id);
+  _restart() {
+    msg("Resetting game...", 1500);
+    this.initialMove = true;
+    this.won = colors.EMPTY;
+    document.body.style.backgroundColor =
+      this.turn == colors.WHITE ? "#b98951" : "#805f3b";
+    const tileElems = Array.from(document.getElementsByClassName("tile"));
+    for (let i = 0; i < tileElems.length; i++) {
+      tileElems[i].classList.remove("colored", "white", "black");
+    }
+    document.getElementById("win").classList.remove("display");
+    this.turn = colors.WHITE;
+    for (let i = 0; i < this.board.length; i++) {
+      this.board[i] = colors.EMPTY;
+    }
   }
 
-  place(id, elem);
-}
-
-tileElems.forEach((element) => {
-  element.addEventListener("click", (e) => {
-    handleClick(e.target);
-  });
-});
-
-function msg(text, time) {
-  console.log(text);
-  var elem = document.createElement("div");
-  elem.classList.add("msg");
-
-  var textElem = document.createElement("p");
-  textElem.classList.add("bold");
-  textElem.innerText = text;
-
-  elem.appendChild(textElem);
-  document.body.appendChild(elem);
-
-  setTimeout(() => {
-    elem.remove();
-  }, time);
-}
-
-function save() {
-  const gameData = {
-    board: board,
-    turn: turn,
-    won: won,
-    yourColor: yourColor,
-    initialMove: initialMove,
-    otherRestarted: otherRestarted,
-    meRestarted: meRestarted,
-  };
-
-  const jsonData = JSON.stringify(gameData);
-  const blob = new Blob([jsonData], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "savegame" + ".json";
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
-
-function load() {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "application/json";
-  input.onchange = (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = JSON.parse(e.target.result);
-      board = data.board;
-      turn = data.turn;
-      won = data.won;
-      yourColor = data.yourColor;
-      initialMove = data.initialMove;
-      otherRestarted = data.otherRestarted;
-      meRestarted = data.meRestarted;
-      for (let i = 0; i < W * H; i++) {
-        if (board[i] != colors.EMPTY) {
-          tileElems[i].classList.add(board[i], "colored");
-        }
+  restart() {
+    if (this.mp && this.mp.conn) {
+      this.mp.restart();
+      if (!this.mp.isHost) {
+        msg("Restart request send.", 1500);
+        return;
       }
-      document.body.style.backgroundColor =
-        turn == colors.WHITE ? "#b98951" : "#805f3b";
-      if (won != colors.EMPTY) {
-        winText.innerText = `${won} wins!`;
-        winElem.classList.add("display");
-      }
+    }
+    this._restart();
+  }
+
+  save() {
+    const gameData = {
+      board: this.board,
+      turn: this.turn,
+      won: this.won,
+      initialMove: this.initialMove,
     };
-    reader.readAsText(file);
-  };
-  input.click();
+
+    const jsonData = JSON.stringify(gameData);
+    const blob = new Blob([jsonData], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "savegame" + ".json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  load() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json";
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = JSON.parse(e.target.result);
+        this.board = data.board;
+        this.turn = data.turn;
+        this.won = data.won;
+        this.initialMove = data.initialMove;
+        const tileElems = Array.from(document.getElementsByClassName("tile"));
+        for (let i = 0; i < W * H; i++) {
+          if (this.board[i] != colors.EMPTY) {
+            tileElems[i].classList.add(this.board[i], "colored");
+          }
+        }
+        document.body.style.backgroundColor =
+          this.turn == colors.WHITE ? "#b98951" : "#805f3b";
+        if (this.won != colors.EMPTY) {
+          winText.innerText = `${won} wins!`;
+          winElem.classList.add("display");
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  }
 }

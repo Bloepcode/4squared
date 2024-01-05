@@ -11,7 +11,7 @@
     <div id="game"></div>
 
     <div class="controls">
-      <button class="restart-btn" onclick="restart();"></button>
+      <button class="restart-btn" onclick="game.restart();"></button>
       <button
         class="help-btn"
         onclick="document.getElementById('help').classList.add('display');"
@@ -20,8 +20,8 @@
         class="mp-btn"
         onclick="document.getElementById('mp').classList.add('display');"
       ></button>
-      <button class="download-btn" onclick="save();"></button>
-      <button class="upload-btn" onclick="load();"></button>
+      <button class="download-btn" onclick="game.save();"></button>
+      <button class="upload-btn" onclick="game.load();"></button>
     </div>
 
     <div class="popup" id="win">
@@ -34,7 +34,7 @@
           X
         </button>
       </div>
-      <button onclick="restart();">Play again!</button>
+      <button onclick="game.restart();">Play again!</button>
     </div>
 
     <div class="popup" id="mp">
@@ -49,24 +49,21 @@
       </div>
 
       <div class="sub-popup display" id="mp-init">
+        <h2>Host:</h2>
+        <button onclick="startMP(); mp.host();">Create private server</button>
+        <h2>Join:</h2>
         <p>Server name</p>
         <input type="text" id="username" />
         <button
-          onclick="mp(document.getElementById('username').value, false, undefined);"
+          onclick="startMP(); mp.join(document.getElementById('username').value);"
         >
-          Host!
-        </button>
-        <button
-          onclick="mp(undefined, true, document.getElementById('username').value);"
-        >
-          Join!
+          Join server
         </button>
       </div>
       <div class="sub-popup" id="mp-info">
-        <div id="qrcode"></div>
         <p id="mp-name">Servername:</p>
         <p id="mp-status">Status: !</p>
-        <button onclick="disconnect();">Disconnect</button>
+        <button onclick="mp.disconnect();">Disconnect</button>
       </div>
     </div>
 
@@ -103,9 +100,21 @@
       </div>
     </div>
 
+    <script src="util.js"></script>
     <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-    <script src="qrcode.min.js"></script>
     <script src="script.js"></script>
     <script src="multiplayer.js"></script>
+
+    <script>
+      const game = new Game();
+      game.init(W, H);
+      let mp = undefined;
+      // startMP();
+      // mp.host();
+      function startMP() {
+        mp = new Multiplayer(game);
+        mp.init();
+      }
+    </script>
   </body>
 </html>
